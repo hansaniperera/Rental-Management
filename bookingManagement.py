@@ -42,6 +42,7 @@ class BookingManagementService:
             if not bookings:
                 print("No bookings found.")
                 return
+            print("All bookings in the database:")
             self.display_bookings(bookings)
         except sqlite3.Error as e:
             print(f"Failed to retrieve bookings: {e}")
