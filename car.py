@@ -1,4 +1,4 @@
-
+# Object class to store details of a car
 class Car:
     def __init__(self, car_id, make, mileage, model, year, available_now, min_rent_period, max_rent_period,
                  daily_rate):

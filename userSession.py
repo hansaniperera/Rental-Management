@@ -1,4 +1,6 @@
 # Singleton instance to store logged user details
+
+# Singleton object to save current logged user details
 class UserSession:
     _instance = None
 

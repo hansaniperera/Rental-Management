@@ -2,7 +2,7 @@ import sqlite3
 from abc import ABC, abstractmethod
 import script
 
-
+# Abstract class to define user
 class UserType(ABC):
     def __init__(self, first_name, last_name, email, password, mobile_number, is_admin):
         self.__first_name = first_name
@@ -73,7 +73,7 @@ class UserType(ABC):
     def save(self, db):
         pass
 
-
+# Concrete class for admin
 class Admin(UserType):
     def __init__(self, first_name, last_name, email, password, mobile_number, is_admin, designation, branch):
         super().__init__(first_name, last_name, email, password, mobile_number, is_admin)
@@ -112,7 +112,7 @@ class Admin(UserType):
     def branch(self, value):
         self.__branch = value
 
-
+# Concrete class for customer
 class Customer(UserType):
     def __init__(self, first_name, last_name, email, password, mobile_number, is_admin, address, license_no):
         super().__init__(first_name, last_name, email, password, mobile_number, is_admin)

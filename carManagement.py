@@ -1,25 +1,22 @@
 import sqlite3
-
-
 from tabulate import tabulate
 import script
 from car import Car
 from dateValidator import DateValidator
 from dbConnect import Database
 from datetime import datetime
-
 from globals import MAX_ATTEMPTS
 from rentalManagement import RentalManagementService
 from vehicleFactory import CarFactory
 
-
+#  Service to manage operations related to car
 class CarManagementService:
     def __init__(self):
         self.db = Database()
         self.date_validator = DateValidator()
         self.rental_management_service = RentalManagementService()
 
-    # Add a car to the database.
+    # Add a car to the database
     def add_car(self, car):
 
         try:
@@ -31,7 +28,7 @@ class CarManagementService:
             print(f"Failed to add car: {error}")
             raise
 
-    # Delete a car from the database.
+    # Delete a car from the database
     def delete_car(self, car_id):
         try:
             self.db.execute_and_commit(script.DELETE_CAR_QUERY, (car_id,))
@@ -39,6 +36,7 @@ class CarManagementService:
             print(f"Failed to delete car: {error}")
             raise
 
+    # Screen to add car
     def add_vehicle(self):
         car_id = self.get_valid_car_id()
         if car_id is None:
@@ -69,6 +67,7 @@ class CarManagementService:
         self.add_car(car)
         print(f"Car with {car_id} added successfully.")
 
+    # Initiate update car details
     def update_vehicle(self):
         cars = self.get_all_cars()
         if not cars:
@@ -87,6 +86,7 @@ class CarManagementService:
         else:
             return
 
+    # Screen to get car Id to update
     def get_update_car(self):
         attempts = 0
         while attempts < MAX_ATTEMPTS:
@@ -99,6 +99,7 @@ class CarManagementService:
         print("Too many invalid attempts. Back to main menu.")
         return None
 
+    # Create table to display cars
     def display_cars(self, cars):
         headers = ["ID", "Make", "Model", "Year", "Mileage", "Available Now", "Min Rent Period(days)",
                    "Max Rent Period(days)", "Daily Rate($)"]
@@ -108,6 +109,7 @@ class CarManagementService:
             car in cars]
         print(tabulate(table_data, headers=headers, tablefmt="grid"))
 
+    # Screen to get the update choice of a car
     def get_update_choice(self):
         print("\nWhich detail would you like to update?")
         print("1. Make")
@@ -120,7 +122,7 @@ class CarManagementService:
         print("8. Daily Rate")
         return input("Enter the number of the detail you want to update: ")
 
-
+    # Save update of car detail to database
     def save_update(self, car_id, update_data):
         try:
             self.update_car_column(car_id, update_data["column"], update_data["value"])
@@ -129,6 +131,7 @@ class CarManagementService:
             print(f"Failed to update vehicle: {e}")
             raise
 
+    # Fetch all cars from database
     def get_all_cars(self):
         try:
             rows = self.db.fetch_all(script.FETCH_ALL_CARS, params=None)
@@ -138,6 +141,7 @@ class CarManagementService:
             print(f"Error while fetching cars: {error}")
             return []
 
+    #  Update column n value of the car
     def update_car_column(self, car_id, column, value):
         query = f"UPDATE cars SET {column} = ? WHERE car_id = ?"
 
@@ -147,6 +151,7 @@ class CarManagementService:
             print(f"Failed to update {column}: {error}")
             raise
 
+    #  Screen to delete a car
     def delete_vehicle(self):
         attempts = 0
         cars = self.get_all_cars()
@@ -170,6 +175,7 @@ class CarManagementService:
         print("Too many invalid attempts. Returning to the main menu.")
         return
 
+    # Check whether car exist by car id
     def car_exists(self, car_id):
         try:
             result = self.db.fetch_one(script.CHECK_CAR_EXIST, (car_id,))
@@ -180,6 +186,7 @@ class CarManagementService:
             print(f"Error while checking if car exists: {error}")
             return False
 
+    # Screen to get valid availability input
     def get_valid_availability(self, prompt):
         attempts = 0
         while attempts < MAX_ATTEMPTS:
@@ -192,6 +199,7 @@ class CarManagementService:
         print("Too many invalid attempts. Returning to the main menu.")
         return None
 
+    # Screen to get valid car id
     def get_valid_car_id(self):
         attempts = 0
         while attempts < MAX_ATTEMPTS:
@@ -203,6 +211,8 @@ class CarManagementService:
 
         print("Too many invalid attempts. Returning to the main menu.")
         return None
+
+    # Get user choice for update car
     def get_field_and_choice(self):
         update_choice = self.get_update_choice()
         update_fields = {
@@ -217,6 +227,7 @@ class CarManagementService:
         }
         return update_choice, update_fields
 
+    # Get update choice and validations
     def get_update_data(self, car_id):
         attempts = 0
         while attempts < MAX_ATTEMPTS:
@@ -261,6 +272,7 @@ class CarManagementService:
         print("Too many invalid attempts. Returning to the main menu.")
         return None
 
+    # Screen to get valid year
     def get_valid_year(self, prompt):
         current_year = datetime.now().year
         attempts = 0
@@ -274,6 +286,7 @@ class CarManagementService:
         print("Too many invalid attempts. Returning to the main menu.")
         return None
 
+    # Screen to get valid rent
     def get_valid_rent(self, prompt):
         attempts = 0
         while attempts < MAX_ATTEMPTS:
@@ -290,6 +303,7 @@ class CarManagementService:
         print("Too many invalid attempts. Returning to the main menu.")
         return None
 
+    # Screen to get valid mileage
     def get_valid_mileage(self, prompt):
         attempts = 0
         while attempts < MAX_ATTEMPTS:
@@ -302,6 +316,7 @@ class CarManagementService:
         print("Too many invalid attempts. Returning to the main menu.")
         return None
 
+    # Validate rent range
     def check_rent_range(self):
         attempts = 0
         while attempts < MAX_ATTEMPTS:
@@ -322,6 +337,7 @@ class CarManagementService:
         print("Too many invalid attempts. Returning to the main menu.")
         return None
 
+    # Validate maximum rent period
     def validate_max_rent_period(self, car_id, max_rent_period):
         attempts = 0
 
@@ -348,6 +364,7 @@ class CarManagementService:
         print("Too many invalid attempts. Returning to the main menu.")
         return False, None
 
+    # Validate minimum rent period
     def validate_min_rent_period(self, car_id, min_rent_period):
         attempts = 0
 
@@ -373,6 +390,7 @@ class CarManagementService:
         print("Too many invalid attempts. Returning to the main menu.")
         return False, None
 
+    # Get Min and Max rent period of a car
     def get_min_max_rent_period(self, car_id):
         car_details = self.db.fetch_one(
             script.FETCH_CAR_DETAILS_BY_CAR_ID, (car_id,)
@@ -382,6 +400,7 @@ class CarManagementService:
         return (car_details["min_rent_period"],
                 car_details["max_rent_period"])
 
+    # Screen to show available cars
     def show_available_cars_screen(self):
         from_date, to_date = self.date_validator.get_booking_dates()
         if from_date is None or to_date is None:
@@ -395,6 +414,7 @@ class CarManagementService:
         self.display_cars(cars)
         return from_date, to_date
 
+    # Get available cars
     def get_available_cars(self, new_from_date, new_to_date, days):
         try:
             rows = self.db.fetch_all(script.FETCH_AVAILABLE_CARS_FOR_DATES, (new_to_date, new_from_date,
@@ -407,6 +427,7 @@ class CarManagementService:
             print(f"Error while fetching cars: {error}")
             return []
 
+    # Validate daily rate
     def get_valid_daily_rate(self, prompt):
         attempts = 0
         while attempts < MAX_ATTEMPTS:

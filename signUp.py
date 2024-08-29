@@ -1,11 +1,9 @@
-import sys
-
 import script
 from dbConnect import Database
 from globals import MAX_ATTEMPTS
 from userManagement import UserManagementService
 
-
+# Manage sign up operation
 class UserRegister:
     def __init__(self):
         self.db = Database()
@@ -25,6 +23,7 @@ class UserRegister:
         return self.user_management_service.save_admin_customer(first_name, last_name, email, password,
                                                          mobile_number, company_code)
 
+    # Validate company code
     def __check_company_code(self, company_code):
 
         code_list = self.db.fetch_all(script.CHECK_CODES, params=None)
@@ -36,10 +35,12 @@ class UserRegister:
         else:
             return False
 
+    # Screen to get company code
     def __company_code_screen(self):
         return input("If you need admin access, enter company code provided to you or select one of choice\n"
                      "\033[1m 1. Continue as a customer\n 3. Logout.\033[0m\nEnter company code: ")
 
+    # Retry screen to get company code
     def __get_company_code(self):
         attempts = 0
         while attempts < MAX_ATTEMPTS:

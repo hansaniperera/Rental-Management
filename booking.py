@@ -1,3 +1,4 @@
+# Object class to store booking details
 class Booking:
     def __init__(self, user_mobile, car_id, from_date, to_date, status, fees, booking_id=None):
         self.__user_mobile = user_mobile

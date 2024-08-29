@@ -4,7 +4,7 @@ import script
 from globals import MAX_ATTEMPTS
 from userSession import UserSession
 
-
+# Manage sign in operations
 class UserLogin:
     def __init__(self):
         self.db = Database()
@@ -26,6 +26,7 @@ class UserLogin:
         print("Too many failed login attempts. Returning to the main menu.")
         return None
 
+    # Validate user details
     def verify_user_details(self, email, password):
         try:
             user = self.db.fetch_one(script.GET_USER, (email, password))

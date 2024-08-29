@@ -67,15 +67,6 @@ CREATE_USER_PREFERENCES = ("CREATE TABLE IF NOT EXISTS user_preferences ( "
     "PRIMARY KEY(user_mobile)  "
 ");")
 
-CREATE_BOOKING_HISTORY = ("CREATE TABLE IF NOT EXISTS booking_history (  "
-    "booking_id INTEGER PRIMARY KEY,  "
-    "user_mobile INTEGER REFERENCES users (mobile_number),  "
-    "car_id TEXT REFERENCES cars (car_id),  "
-    "from_date TEXT,  "
-    "to_date TEXT,  "
-    "status TEXT  "
-");")
-
 BATCH_INSERT_CARS = """
 INSERT INTO Cars (car_id, make, mileage, model, year, available_now, min_rent_period, max_rent_period, daily_rate)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
@@ -135,28 +126,34 @@ INITIAL_USERS = [
     (215678430, 'hansani', 'perera', 'hansani@gmail.com', '123', '0')
 ]
 
+#  Setup database tables and default data
 class SetupDatabase:
 
     def __init__(self):
         self.db = Database()
 
+    # Create and commit tables
     def initialize_db(self):
 
-        self.db.execute("BEGIN TRANSACTION")
+        tables = [
+            ("CARS", CREATE_CARS),
+            ("USERS", CREATE_USERS),
+            ("BOOKINGS", CREATE_BOOKINGS),
+            ("ADMINS", CREATE_ADMINS),
+            ("CUSTOMERS", CREATE_CUSTOMERS),
+            ("COMPANY_CODES", CREATE_COMPANY_CODES),
+            ("USER_PREFERENCES", CREATE_USER_PREFERENCES),
+        ]
 
-        self.db.execute(CREATE_CARS)
-        self.db.execute(CREATE_USERS)
-        self.db.execute(CREATE_BOOKINGS)
-        self.db.execute(CREATE_ADMINS)
-        self.db.execute(CREATE_CUSTOMERS)
-        self.db.execute(CREATE_BOOKING_HISTORY)
-        self.db.execute(CREATE_COMPANY_CODES)
-        self.db.execute(CREATE_USER_PREFERENCES)
+        self.db.connection.execute("BEGIN TRANSACTION")
 
-        self.db.commit()
+        for table_name, create_query in tables:
+            if not self.table_exists(table_name):
+                self.db.cursor.execute(create_query)
 
-        print("Database initialized successfully.")
+        self.db.connection.commit()
 
+    # Insert default data
     def run_insert_scripts(self):
         try:
             self.db.execute("BEGIN TRANSACTION")
@@ -174,7 +171,12 @@ class SetupDatabase:
             print(f"Transaction failed: {e}")
             raise
 
-        print("Insert script ran successfulLy.")
+    #  Check whether a table exist
+    def table_exists(self, table_name):
+        query = f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}';"
+        result = self.db.fetch_one(query)
+        return result is not None
+
 
 if __name__ == "__main__":
     setup = SetupDatabase()

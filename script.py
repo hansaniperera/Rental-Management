@@ -1,7 +1,7 @@
 ADD_USER = ("INSERT INTO users(first_name, last_name, email, password, mobile_number, is_admin)"
             " VALUES (?,?,?,?,?,?)")
 
-ADD_CUSTOMER = ("INSERT INTO customers(email, address, license_number, rental_count)"
+ADD_CUSTOMER = ("INSERT INTO customers(email, address, license_number, rentals_count)"
                 " VALUES (?,?,?,0)")
 
 ADD_ADMIN = ("INSERT INTO admins(email, designation, branch)"
@@ -62,10 +62,7 @@ RECOMMENDED_CARS = ("SELECT car_id, make, mileage, model, year, available_now, m
 FETCH_MAKES_OF_CARS = ("SELECT DISTINCT make FROM cars")
 
 FETCH_MODELS_OF_MAKE = ("SELECT DISTINCT model FROM cars WHERE make = ?")
-#
-# Booking
 
-# SQL queries related to bookings
 ADD_BOOKING = ("\n"
                "INSERT INTO bookings (user_mobile, car_id, from_date, to_date, status, fee)\n"
                "VALUES (?, ?, ?, ?, ?, ?)\n")

@@ -7,12 +7,11 @@ from carManagement import CarManagementService
 from dateValidator import DateValidator
 from dbConnect import Database
 from tabulate import tabulate
-
 from globals import MAX_ATTEMPTS
 from rentalManagement import RentalManagementService
 from userSession import UserSession
 
-
+# Service to manage booking related operations
 class BookingManagementService:
     def __init__(self):
         self.db = Database()
@@ -20,6 +19,7 @@ class BookingManagementService:
         self.user_session = UserSession()
         self.date_validator = DateValidator()
 
+    #  Save booking details and user loyalty details to database
     def add_booking(self, booking_data):
         try:
             self.db.execute("BEGIN TRANSACTION")
@@ -31,9 +31,11 @@ class BookingManagementService:
             self.update_user_loyalty(current_user["email"])
             self.db.commit()
             print(f"Booking for {booking_data.car_id} added successfully.")
+            print("An agent will contact you for the payments and pick-up arrangements.")
         except sqlite3.Error as error:
             print(f"Failed to add booking: {error}")
 
+    # View all the booking in the database - Admins only
     def view_bookings(self):
         try:
             bookings = self.db.fetch_all(script.GET_ALL_BOOKINGS)
@@ -44,6 +46,7 @@ class BookingManagementService:
         except sqlite3.Error as e:
             print(f"Failed to retrieve bookings: {e}")
 
+    #  Initiate a booking
     def add_booking_details(self):
         rental_management_service = RentalManagementService()
         try:
@@ -81,6 +84,7 @@ class BookingManagementService:
             print(f"Failed to retrieve details of car: {error}")
             return None
 
+    # Screen to get the car id
     def get_car_id(self):
         attempts = 0
         while attempts < MAX_ATTEMPTS:
@@ -93,6 +97,7 @@ class BookingManagementService:
         print("Too many invalid attempts. Back to main menu.")
         return None
 
+    # View future booking of current user
     def view_future_bookings(self):
         session = UserSession()
         current_user = session.get_current_user()
@@ -114,10 +119,12 @@ class BookingManagementService:
             print(f"Failed to retrieve future bookings: {error}")
             return None
 
+    # Create table to display booking details
     def display_bookings(self, booking_data):
         headers = ["Booking ID", "User Mobile", "Car ID", "From Date", "To Date", "Status", "Fees($)"]
         print(tabulate(booking_data, headers=headers, tablefmt="fancy_grid"))
 
+    # Update user loyalty when booking
     def update_user_loyalty(self, email):
         current_date = datetime.now().strftime('%Y-%m-%d')
         self.db.execute(

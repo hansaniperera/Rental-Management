@@ -5,14 +5,16 @@ import script
 from dbConnect import Database
 from globals import MAX_ATTEMPTS
 
-
+# Service to manage rental operations
 class RentalManagementService:
     def __init__(self):
         self.db = Database()
 
+    # Calculate rental fee
     def calculate_rental_fees(self, days, daily_rate):
         return float(daily_rate * int(days) + float(self.__calculate_additional_charges(days)))
 
+    # Get the number of days
     def calculate_days(self, from_date, to_date):
         date_format = "%Y-%m-%d"
 
@@ -27,6 +29,7 @@ class RentalManagementService:
             print(f"Error in date format: {e}")
             return None
 
+    # Calculate additional charges for rental fee
     def __calculate_additional_charges(self, days):
 
         if days < 5:
@@ -40,6 +43,7 @@ class RentalManagementService:
         else:
             return 35
 
+    # Screen to accept/reject screen -Admins
     def view_accept_reject_rental_screen(self):
         bookings = self.view_pending_bookings()
         if bookings is None:
@@ -55,6 +59,7 @@ class RentalManagementService:
 
         self.accept_reject_booking(booking_id, action)
 
+    # Get the choice for accept/reject
     def __get_accept_or_reject_choice(self):
         attempts = 0
         while attempts < MAX_ATTEMPTS:
@@ -73,6 +78,7 @@ class RentalManagementService:
         print("Too many invalid attempts. Returning to the main menu.")
         return None
 
+    #  Validate booking id
     def __get_valid_booking_id(self):
         attempts = 0
         while attempts < MAX_ATTEMPTS:
@@ -87,6 +93,7 @@ class RentalManagementService:
         print("Too many invalid attempts. Returning to the main menu.")
         return None
 
+    # Check for booking id in database
     def __is_valid_booking_id(self, booking_id):
         try:
             result = self.db.fetch_one(
@@ -97,6 +104,7 @@ class RentalManagementService:
             print(f"Error while validating booking ID: {error}")
             return False
 
+    #  Save booking status to database
     def accept_reject_booking(self, booking_id, status):
         try:
             self.db.execute_and_commit(
@@ -107,6 +115,7 @@ class RentalManagementService:
             print(f"Failed to accept booking: {error}")
             raise
 
+    #  Get the pending bookings to display
     def view_pending_bookings(self):
         try:
             bookings = self.db.fetch_all(script.GET_BOOKINGS_BY_STATUS, ('Pending',))
@@ -121,10 +130,12 @@ class RentalManagementService:
             print(f"Failed to retrieve pending bookings: {error}")
             return None
 
+    # Display booking details
     def display_bookings(self, booking_data):
         headers = ["Booking ID", "User Mobile", "Car ID", "From Date", "To Date", "Status", "Fees($)"]
         print(tabulate(booking_data, headers=headers, tablefmt="fancy_grid"))
 
+    # Calculate the discount
     def calculate_discount(self, email, user_mobile, car_make, car_model):
         user = self.db.fetch_one(script.FETCH_RENTAL_COUNTS,
                                  (email,))

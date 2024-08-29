@@ -1,5 +1,7 @@
 import sqlite3
 
+from globals import DATABASE_NAME
+
 
 # Create Singleton Database connection
 class Database:
@@ -11,7 +13,7 @@ class Database:
 
     def __init__(self):
         if not hasattr(self, 'connection') or not self.connection:
-            self.connection = sqlite3.connect('rentalDb_new1.db')
+            self.connection = sqlite3.connect(DATABASE_NAME)
             self.connection.row_factory = sqlite3.Row  # Enable Row factory for column name access
             self.cursor = self.connection.cursor()
 

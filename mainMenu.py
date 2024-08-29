@@ -8,7 +8,7 @@ from carManagement import CarManagementService
 from userManagement import UserManagementService
 from userSession import UserSession
 
-
+# Display main-menu
 class MainMenuDisplay:
     def __init__(self):
         self.car_management_service = CarManagementService()
@@ -17,6 +17,7 @@ class MainMenuDisplay:
         self.rental_management_service = RentalManagementService()
         self.user_management_service = UserManagementService()
 
+    # Screen to display main menu
     def display_menu(self):
         print("===============================================================================")
         print("")
@@ -37,6 +38,7 @@ class MainMenuDisplay:
         else:
             self.customer_screen()
 
+    # Check the login choice
     def login_choice(self, login_choice):
         user_log = UserLogin()
         if login_choice == "1":
@@ -65,6 +67,7 @@ class MainMenuDisplay:
             print("Invalid choice. Please try again.")
             self.display_menu()
 
+    # Screen for Admins
     def admin_screen(self):
         while True:
             print("\n***** Admin Screen - Vehicle Management *****")
@@ -94,6 +97,7 @@ class MainMenuDisplay:
             else:
                 print("Invalid choice, please try again.")
 
+    # Screen for customers
     def customer_screen(self):
         current_user = self.user_session.get_current_user()
         while True:

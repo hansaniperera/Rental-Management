@@ -1,11 +1,12 @@
 from datetime import datetime
 from globals import MAX_ATTEMPTS
 
-
+# Helper class to validate dates
 class DateValidator:
     def __init__(self):
         pass
 
+    # Screen to get booking dates
     def get_booking_dates(self):
         attempts = 0
 
@@ -27,6 +28,7 @@ class DateValidator:
         print("Too many invalid attempts. Returning to the main menu.")
         return None, None
 
+    # validate date
     def get_valid_date(self, prompt):
         attempts = 0
         while attempts < MAX_ATTEMPTS:

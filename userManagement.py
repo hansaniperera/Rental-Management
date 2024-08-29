@@ -8,12 +8,13 @@ from userType import Customer, Admin
 from tabulate import tabulate
 import re
 
-
+# Service to manage user operations
 class UserManagementService:
     def __init__(self):
         self.db = Database()
         self.car_management_service = CarManagementService()
 
+    # Initiate admin/customer save details
     def save_admin_customer(self, first_name, last_name, email, password, mobile_number, company_code):
         if company_code == "1":
             licence_no = input("Enter License Number: ")
@@ -31,6 +32,7 @@ class UserManagementService:
             admin.save(self.db)
         return True
 
+    # Screen to get user details
     def get_user_details(self):
         first_name = self.__get_valid_first_name()
         if first_name is None:
@@ -93,6 +95,7 @@ class UserManagementService:
         print("Too many invalid attempts. Returning to the main menu.")
         return None
 
+    # Validate email exist in database
     def __email_exists(self, email):
 
         self.db.execute(script.CHECK_EMAIL_EXIST, (email,))
@@ -140,21 +143,26 @@ class UserManagementService:
         print("Too many invalid attempts. Returning to the main menu.")
         return None
 
+    # Screen to get password
     def __password_screen(self):
         return input("Enter password: ")
 
+    # Screen to get confirm password
     def __confirm_password_screen(self):
         return input("Confirm password: ")
 
+    # Check password equality
     def __check_password(self, password, confirm_password):
         return confirm_password == password
 
+    # Check mobile number exist
     def __mobile_exist_exists(self, mobile_number):
 
         self.db.execute(script.CHECK_MOBILE_NO_EXIST, (mobile_number,))
         count = self.db.cursor.fetchone()[0]
         return count > 0
 
+    # Initiate user preference to save
     def save_user_preferences(self, user_mobile):
         preferred_make = self.get_valid_make()
         if preferred_make is None:
@@ -171,6 +179,7 @@ class UserManagementService:
         except sqlite3.Error as error:
             print(f"Failed to save user preferences: {error}")
 
+    # Validate make whether exist in database
     def get_valid_make(self):
         makes = self.get_all_makes()
         if not makes:
@@ -191,6 +200,7 @@ class UserManagementService:
         print("Too many invalid attempts. Returning to the main menu.")
         return None
 
+    # Validate model whether exist in database
     def get_valid_model(self, make):
         models = self.get_all_models_for_make(make)
         if not models:
@@ -211,6 +221,7 @@ class UserManagementService:
         print("Too many invalid attempts. Returning to the main menu.")
         return None
 
+    # Get all the makes from database
     def get_all_makes(self):
         try:
             rows = self.db.fetch_all(script.FETCH_MAKES_OF_CARS, params=None)
@@ -219,6 +230,7 @@ class UserManagementService:
             print(f"Failed to fetch car makes: {error}")
             return []
 
+    # Get models for the specific make
     def get_all_models_for_make(self, make):
         try:
             rows = self.db.fetch_all(script.FETCH_MODELS_OF_MAKE, (make,))
