@@ -69,13 +69,7 @@ class CarManagementService:
 
     # Initiate update car details
     def update_vehicle(self):
-        cars = self.get_all_cars()
-        if not cars:
-            print("No car found in the database.")
-            return
-
-        print("All Cars in the database:")
-        self.display_cars(cars)
+        self.view_all_cars()
         car_id = self.get_update_car()
         if not car_id:
             return
@@ -440,4 +434,12 @@ class CarManagementService:
         print("Too many invalid attempts. Returning to the main menu.")
         return None
 
+    def view_all_cars(self):
+        cars = self.get_all_cars()
+        if not cars:
+            print("No car found in the database.")
+            return
+
+        print("All Cars in the database:")
+        self.display_cars(cars)
 

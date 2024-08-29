@@ -62,8 +62,6 @@ CREATE_USER_PREFERENCES = ("CREATE TABLE IF NOT EXISTS user_preferences ( "
     "user_mobile INTEGER REFERENCES users (mobile_number),  "
     "preferred_make TEXT,  "
     "preferred_model TEXT,  "
-    "preferred_year INTEGER,  "
-    "preferred_mileage INTEGER,  "
     "PRIMARY KEY(user_mobile)  "
 ");")
 
@@ -158,9 +156,9 @@ class SetupDatabase:
         try:
             self.db.execute("BEGIN TRANSACTION")
 
-            self.db.execute_many(BATCH_INSERT_USERS, INITIAL_USERS)
-            self.db.execute_many(BATCH_INSERT_ADMINS, INITIAL_ADMINS)
-            self.db.execute_many(BATCH_INSERT_CUSTOMERS, INITIAL_CUSTOMERS)
+            # self.db.execute_many(BATCH_INSERT_USERS, INITIAL_USERS)
+            # self.db.execute_many(BATCH_INSERT_ADMINS, INITIAL_ADMINS)
+            # self.db.execute_many(BATCH_INSERT_CUSTOMERS, INITIAL_CUSTOMERS)
             self.db.execute_many(BATCH_INSERT_CARS, INITIAL_CARS)
             self.db.execute_many(BATCH_INSERT_COMPANY_CODES, INITIAL_COMPANY_CODES)
 

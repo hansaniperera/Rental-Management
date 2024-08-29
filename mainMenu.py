@@ -1,3 +1,4 @@
+import os
 import sys
 
 from bookingManagement import BookingManagementService
@@ -19,6 +20,7 @@ class MainMenuDisplay:
 
     # Screen to display main menu
     def display_menu(self):
+        self.clear_terminal()
         print("===============================================================================")
         print("")
         print("=============== | Welcome to HSP Car Rental Management System | ===============")
@@ -69,14 +71,20 @@ class MainMenuDisplay:
 
     # Screen for Admins
     def admin_screen(self):
+        self.clear_terminal()
+        current_user = self.user_session.get_current_user()
         while True:
+            print("==================================================")
+            print(f"\n\t Hi {current_user["first_name"]}  {current_user["last_name"]}!\n")
+            print("==================================================")
             print("\n***** Admin Screen - Vehicle Management *****")
             print("1. Add a vehicle")
             print("2. Update a vehicle")
             print("3. Delete a vehicle")
             print("4. Accept/Reject pending Bookings")
-            print("5. View all Bookings")
-            print("6. Logout")
+            print("5. View all Cars")
+            print("6. View all Bookings")
+            print("7. Logout")
 
             choice = input("Enter your choice (1-5): ")
 
@@ -89,8 +97,10 @@ class MainMenuDisplay:
             elif choice == "4":
                 self.rental_management_service.view_accept_reject_rental_screen()
             elif choice == "5":
-                self.booking_management_service.view_bookings()
+                self.car_management_service.view_all_cars()
             elif choice == "6":
+                self.booking_management_service.view_bookings()
+            elif choice == "7":
                 print("Thank you for visiting our Car Rental Service. Goodbye!")
                 self.user_session.set_current_user(None)
                 self.display_menu()
@@ -99,6 +109,7 @@ class MainMenuDisplay:
 
     # Screen for customers
     def customer_screen(self):
+        self.clear_terminal()
         current_user = self.user_session.get_current_user()
         while True:
             print("==================================================")
@@ -127,3 +138,11 @@ class MainMenuDisplay:
                 self.display_menu()
             else:
                 print("Invalid choice. Please select an option between 1 and 5.")
+
+    def clear_terminal(self):
+        # Windows
+        if os.name == 'nt':
+            os.system('cls')
+        # macOS and Linux
+        else:
+            os.system('clear')

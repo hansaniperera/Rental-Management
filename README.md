@@ -6,6 +6,9 @@ of Admins and Customers. This also includes an innovative feature to calculate r
 counts and user preference.The application is built with SQLite as the database, since it is lightweight and easy to 
 set up as this is a simple application.
 
+### Note: Initial Cars and Company_Codes added to database when initializing
+(Company code : XYZ, BCD, ABC) - No functionality to add this from app to keep the security.
+
 ## Table of Contents
 1. Installation
 2. Configuration

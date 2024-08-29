@@ -140,8 +140,7 @@ class RentalManagementService:
         user = self.db.fetch_one(script.FETCH_RENTAL_COUNTS,
                                  (email,))
         discount = 0
-
-        if user['rentals_count'] > 5:
+        if int(user['rentals_count']) > 4:
             discount += 10
 
         preferences = self.db.fetch_one(

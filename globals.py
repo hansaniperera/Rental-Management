@@ -1,2 +1,2 @@
-DATABASE_NAME = 'rentalDb_prod2.db'
+DATABASE_NAME = 'rentalDb_prod.db'
 MAX_ATTEMPTS = 3
